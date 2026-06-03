@@ -1,8 +1,0 @@
-{
-  "name": "Ayyi DJ Setlist",
-  "description": "Neon futuristic landing page for Ayyi, a virtual DJ for Roblox, featuring setlist management and immersive audio visualizations.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
