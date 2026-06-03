@@ -1,0 +1,6 @@
+{
+  "name": "DJ Ayyi Setlist",
+  "description": "A neon-futuristic landing page for DJ Ayyi's setlists with an interactive audio visualizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-neon-cyan: #00f2ff;
+  --color-neon-purple: #bc13fe;
+  --color-neon-pink: #ff00ff;
+  --color-dark-surface: #0a0a0c;
+  --color-dark-elevated: #16161a;
+}
+
+@layer base {
+  body {
+    @apply bg-dark-surface text-white antialiased;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-800 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-700;
+  }
+}
+
+.neon-glow {
+  text-shadow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.3);
+}
+
+.neon-border {
+  box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+}
+
+.glass-morphism {
+  @apply backdrop-blur-lg bg-white/5 border border-white/10;
+}
