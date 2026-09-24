@@ -12,6 +12,20 @@ import type { Setlist } from './types';
 
 const INITIAL_SETLISTS: Setlist[] = [
   {
+    id: 'rawstyle-hard-techno',
+    title: 'RAWSTYLE / HARD TECHNO MIX LIVESET',
+    duration: '--:--',
+    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/3zn9ub42qc30y7twcc5ku/RAWSTYLE-HARD-TECHNO-MIX-LIVESET.mp3?rlkey=xbc4en7is14ygaecrugqfm358&st=mmt731m6',
+    tags: ['RAWSTYLE', 'HARD TECHNO']
+  },
+  {
+    id: 'hipdut-mixtape',
+    title: 'HIPDUT MIXTAPE LIVESET',
+    duration: '--:--',
+    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/ut8f82yorp89zh6w5947c/HIPDUT-MIXTAPE-LIVESET.mp3?rlkey=fqczlrxf1z5o84a7dj58f0bvh&st=rpe5fkss',
+    tags: ['HIPDUT', 'BASSLINE BOUNCE']
+  },
+  {
     id: 'indobounce-mix-2',
     title: 'IndoBounce Mix Set 2',
     duration: '--:--',
@@ -225,7 +239,7 @@ export default function App() {
           </div>
           <div>
             <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">AYYI</span>
-            <span className="block text-[10px] font-mono text-neon-cyan uppercase tracking-widest">Roblox Virtual DJ</span>
+            <span className="block text-[10px] font-mono text-neon-cyan uppercase tracking-widest">WADAH GABUT AJA SICH</span>
           </div>
         </div>
         
@@ -256,7 +270,7 @@ export default function App() {
               {currentSetlist.id === 'featured' ? (
                 <>HARDCORE X <br /><span className="text-neon-cyan neon-glow">RAWSTYLE</span> MIX</>
               ) : (
-                <div className="max-w-xl break-words">
+                <div className="max-w-xl break-normal">
                   {currentSetlist.title}
                 </div>
               )}
@@ -364,10 +378,11 @@ export default function App() {
              <Music2 className="w-4 h-4" />
              <span>© 2026 AYYI SETLIST ARCHIVE</span>
           </div>
-          <div className="flex gap-8">
+          <div className="grid grid-cols-2 md:flex gap-x-8 gap-y-4 md:gap-8 text-center md:text-left">
             <a href="https://www.roblox.com/users/2600442975/profile" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-neon-cyan transition-colors text-sm uppercase font-mono tracking-widest">Roblox</a>
             <a href="https://discordapp.com/users/1385949667359068268" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-neon-cyan transition-colors text-sm uppercase font-mono tracking-widest">Discord</a>
             <a href="https://soundcloud.com/daexhi" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-neon-cyan transition-colors text-sm uppercase font-mono tracking-widest">SoundCloud</a>
+            <a href="https://www.mixcloud.com/daexhi/" target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-neon-cyan transition-colors text-sm uppercase font-mono tracking-widest">Mixcloud</a>
           </div>
         </footer>
       </main>
