@@ -12,6 +12,13 @@ import type { Setlist } from './types';
 
 const INITIAL_SETLISTS: Setlist[] = [
   {
+    id: 'hard-techno-industrial-techno',
+    title: 'HARD TECHNO MIX',
+    duration: '--:--',
+    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/g4wckt55ad0fbr0xdecri/AYYI-HARD-TECHNO-SET.MP3?rlkey=3p0dn0timakn4mru6fzghlgi0&st=3bcd9lnf',
+    tags: ['HARD TECHNO', 'INDUSTRIAL TECHNO']
+  },
+  {
     id: 'rawstyle-hard-techno',
     title: 'RAWSTYLE / HARD TECHNO MIX LIVESET',
     duration: '--:--',
