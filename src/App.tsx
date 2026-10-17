@@ -241,9 +241,7 @@ export default function App() {
 
       <nav className="relative z-20 px-4 md:px-8 py-6 flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-neon-purple to-neon-cyan rounded-lg flex items-center justify-center p-2 shadow-[0_0_15px_rgba(0,242,255,0.3)]">
-            <Disc className="w-full h-full text-white animate-spin-slow" />
-          </div>
+          <img src="/favicon.svg" alt="AYYI" className="w-12 h-12 shrink-0" />
           <div>
             <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">AYYI</span>
             <span className="block text-[10px] font-mono text-neon-cyan uppercase tracking-widest">WADAH GABUT AJA SICH</span>
