@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".18" stop-color="#8d969d"/>
+      <stop offset=".34" stop-color="#fff"/>
+      <stop offset=".49" stop-color="#667079"/>
+      <stop offset=".68" stop-color="#f8fbff"/>
+      <stop offset=".83" stop-color="#9099a1"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <linearGradient id="glint" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff" stop-opacity=".32"/>
+      <stop offset=".48" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="blur"/>
+      <feOffset dy="2" result="offset"/>
+      <feComposite in="offset" in2="SourceAlpha" operator="out" result="outline"/>
+      <feFlood flood-color="#000" flood-opacity=".9" result="color"/>
+      <feComposite in="color" in2="outline" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="64" cy="64" r="62" fill="#030405"/>
+  <circle cx="64" cy="64" r="59.5" fill="none" stroke="#343a40" stroke-width="1.5"/>
+  <circle cx="64" cy="64" r="57" fill="url(#glint)"/>
+  <path d="M64 23 99 103H81L74 86H53l-7 17H28l36-80Zm0 28-7 20h14l-7-20Z" fill="url(#chrome)" stroke="#e4eaf0" stroke-opacity=".55" stroke-width="1" stroke-linejoin="round" filter="url(#shadow)"/>
+  <path d="M64 29 35 99h8l24-57Z" fill="#fff" opacity=".24"/>
+</svg>
