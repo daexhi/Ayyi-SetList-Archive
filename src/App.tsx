@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Pause, Disc, Music2, Share2, Volume2 } from 'lucide-react';
+import { Play, Pause, Disc, Music2, Share2, Volume2, RotateCcw, RotateCw } from 'lucide-react';
 import Visualizer from './components/Visualizer';
 import SetlistRow from './components/SetlistRow';
 import type { Setlist } from './types';
@@ -72,12 +72,54 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [actualDurations, setActualDurations] = useState<Record<string, string>>({});
+  const [hasPlaybackControls, setHasPlaybackControls] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const mainRef = useRef<HTMLDivElement>(null);
+  const orbitRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const word = orbitRef.current;
+    if (!word) return;
+
+    const origin = { x: 0, y: 0, z: 0, scale: 0.92 };
+    const transformAt = (point: typeof origin, rotateX: number, rotateY: number) =>
+      `translate3d(calc(-50% + ${point.x}vw), calc(-50% + ${point.y}vh), ${point.z}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${point.scale})`;
+
+    word.style.transform = transformAt(origin, 0, 0);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const randomPoint = () => ({
+      x: (Math.random() - 0.5) * (window.innerWidth < 640 ? 24 : 64),
+      y: (Math.random() - 0.5) * (window.innerWidth < 640 ? 34 : 52),
+      z: Math.round((Math.random() - 0.5) * (window.innerWidth < 640 ? 180 : 360)),
+      scale: 0.82 + Math.random() * 0.26,
+    });
+
+    const frames: Keyframe[] = [{ transform: transformAt(origin, 0, 0), offset: 0 }];
+    const directionX = Math.random() < 0.5 ? -1 : 1;
+    const directionY = Math.random() < 0.5 ? -1 : 1;
+    let rotateX = 0;
+    let rotateY = 0;
+
+    for (let segment = 1; segment <= 16; segment++) {
+      rotateX += directionX * 90;
+      rotateY += directionY * 90;
+      const point = segment % 4 === 0 ? (segment === 16 ? origin : randomPoint()) : randomPoint();
+      frames.push({ transform: transformAt(point, rotateX, rotateY), offset: segment / 16 });
+    }
+
+    const animation = word.animate(frames, {
+      duration: 96000,
+      iterations: Infinity,
+      easing: 'linear',
+    });
+
+    return () => animation.cancel();
+  }, []);
 
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600);
@@ -178,6 +220,7 @@ export default function App() {
   };
 
   const handleTogglePlay = (setlist?: Setlist) => {
+    setHasPlaybackControls(true);
     initAudio();
 
     const targetSetlist = setlist || currentSetlist;
@@ -221,6 +264,15 @@ export default function App() {
     }
   };
 
+  const skipAudio = (offset: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const maxTime = Number.isFinite(audio.duration) ? audio.duration : Number.POSITIVE_INFINITY;
+    const nextTime = Math.max(0, Math.min(maxTime, audio.currentTime + offset));
+    audio.currentTime = nextTime;
+    setCurrentTime(nextTime);
+  };
+
   return (
     <div ref={mainRef} className="min-h-screen bg-dark-surface font-sans selection:bg-neon-cyan/30 overflow-x-hidden">
       
@@ -229,21 +281,26 @@ export default function App() {
         <Visualizer analyser={analyserRef.current} isActive={isPlaying} isBlurred={true} />
       </div>
 
-      {/* Background Typography */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none select-none z-0">
-        <h1 className="absolute -top-10 -left-10 text-[25vw] font-extrabold text-white/[0.02] leading-none tracking-tighter uppercase whitespace-nowrap">
-          AYYI AYYI AYYI
-        </h1>
-        <h1 className="absolute bottom-[-5vw] -right-10 text-[25vw] font-extrabold text-white/[0.02] leading-none tracking-tighter uppercase whitespace-nowrap">
-          VIRTUAL DJ
-        </h1>
+      {/* 3D Chrome Background Typography */}
+      <div className="y2k-orbit-stage" aria-hidden="true">
+        <span ref={orbitRef} className="y2k-orbit-word">
+          {Array.from({ length: 15 }, (_, index) => (
+            <span
+              key={index}
+              className={index === 14 ? 'y2k-orbit-face' : 'y2k-orbit-depth'}
+              style={{ transform: `translateZ(${(index - 14) * 2}px)` }}
+            >
+              AYYI
+            </span>
+          ))}
+        </span>
       </div>
 
       <nav className="relative z-20 px-4 md:px-8 py-6 flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <img src="/favicon.svg" alt="AYYI" className="w-12 h-12 shrink-0" />
           <div>
-            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">AYYI</span>
+            <span className="chrome-sheen text-xl font-bold tracking-tight">AYYI</span>
             <span className="block text-[10px] font-mono text-neon-cyan uppercase tracking-widest">WADAH GABUT AJA SICH</span>
           </div>
         </div>
@@ -253,17 +310,18 @@ export default function App() {
             href="https://discordapp.com/users/1385949667359068268" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="px-5 py-2 rounded-full border border-white/10 hover:border-white/30 bg-white/5 transition-all text-sm font-medium"
+            className="chrome-button hidden sm:inline-flex px-5 py-2 rounded-full transition-all text-sm font-semibold"
           >
             Contact
           </a>
         </div>
       </nav>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 pb-32">
+      <main className="relative z-10 w-full min-w-0 max-w-7xl mx-auto px-4 md:px-8 pb-32">
         {/* Featured Section */}
-        <section className="mt-8 md:mt-12 mb-16 md:mb-24 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <section className="mt-8 md:mt-12 mb-16 md:mb-24 grid w-full min-w-0 grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           <motion.div 
+            className="min-w-0"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -271,11 +329,11 @@ export default function App() {
             <span className="inline-block px-3 py-1 bg-neon-cyan/10 border border-neon-cyan/20 rounded text-[10px] font-mono text-neon-cyan uppercase tracking-widest mb-6">
               {currentSetlist.id === 'featured' ? 'Featured Setlist' : 'Now Playing'}
             </span>
-            <h2 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none mb-8 text-white uppercase">
+            <h2 className="text-4xl md:text-8xl font-extrabold tracking-tighter leading-none mb-8 text-white uppercase">
               {currentSetlist.id === 'featured' ? (
                 <>HARDCORE X <br /><span className="text-neon-cyan neon-glow">RAWSTYLE</span> MIX</>
               ) : (
-                <div className="max-w-xl break-normal">
+                <div className="max-w-xl min-w-0 break-normal">
                   {currentSetlist.title}
                 </div>
               )}
@@ -287,7 +345,7 @@ export default function App() {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => handleTogglePlay(INITIAL_SETLISTS[0])}
-                className="group flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                className="chrome-button group flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 font-bold rounded-full transition-transform hover:scale-105"
               >
                 {isPlaying && currentSetlist.id === INITIAL_SETLISTS[0].id ? (
                   <>
@@ -308,7 +366,7 @@ export default function App() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="relative glass-morphism rounded-3xl p-6 md:p-8 overflow-hidden w-full h-[350px] md:h-auto md:aspect-[4/3] flex flex-col justify-end"
+            className="relative min-w-0 glass-morphism rounded-3xl p-6 md:p-8 overflow-hidden w-full h-[350px] md:h-auto md:aspect-[4/3] flex flex-col justify-end"
           >
             {/* Visualizer Background */}
             <div className="absolute inset-0 z-0">
@@ -330,7 +388,7 @@ export default function App() {
                 <span className="text-xs font-mono text-neon-cyan uppercase">Live Audio Engine</span>
               </div>
               <h3 className="text-2xl font-bold text-white">{currentSetlist.title}</h3>
-              <p className="inline-block mt-2 text-zinc-300 font-mono text-sm uppercase tracking-wider bg-black/60 backdrop-blur-sm px-3 py-1 rounded">
+              <p className="inline-block max-w-full mt-2 text-zinc-300 font-mono text-[10px] sm:text-sm uppercase tracking-wider bg-black/60 backdrop-blur-sm px-3 py-1 rounded break-words">
                 {(isPlaying && duration > 0) ? formatTime(duration) : (actualDurations[currentSetlist.id] || currentSetlist.duration)} — {currentSetlist.tags.join(' / ')}
               </p>
             </div>
@@ -349,17 +407,17 @@ export default function App() {
             </button>
           </div>
 
-          <div className="glass-morphism rounded-2xl overflow-hidden shadow-2xl">
-            <div className="hidden md:grid grid-cols-[auto_1fr_auto] gap-4 px-6 py-4 border-b border-white/5 text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+          <div className="y2k-setlist-panel glass-morphism rounded-2xl overflow-hidden shadow-2xl">
+            <div className="y2k-setlist-head hidden md:grid grid-cols-[auto_1fr_auto] gap-4 px-6 py-4 border-b border-white/5 text-[10px] font-mono uppercase tracking-widest">
               <span>Status</span>
               <span>Title / Tags</span>
               <span>Duration</span>
             </div>
-            <div className="flex md:hidden px-4 py-3 border-b border-white/5 text-[8px] font-mono text-zinc-500 uppercase tracking-widest justify-between">
+            <div className="y2k-setlist-head flex md:hidden px-4 py-3 border-b border-white/5 text-[8px] font-mono uppercase tracking-widest justify-between">
               <span>Collection</span>
               <span>Time</span>
             </div>
-            <div className="p-1 md:p-3 divide-y divide-white/[0.02]">
+            <div className="y2k-setlist-rows p-1 md:p-3">
               {INITIAL_SETLISTS.map((setlist) => (
                 <SetlistRow 
                   key={setlist.id} 
@@ -394,44 +452,54 @@ export default function App() {
 
       {/* Persistent Player Bar */}
       <AnimatePresence>
-        {isPlaying && (
+        {hasPlaybackControls && (
           <motion.div 
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
-            className="fixed bottom-0 inset-x-0 z-50 p-3 md:px-8 md:py-4 glass-morphism border-t border-white/10"
+            className="y2k-player-deck fixed bottom-0 inset-x-0 z-50 p-3 md:px-8 md:py-4"
           >
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-3 md:gap-8">
               {/* Info & Mobile Play Toggle Row */}
               <div className="w-full md:w-auto flex items-center justify-between md:justify-start gap-4 min-w-0 md:min-w-[200px] flex-shrink-0">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-zinc-800 rounded relative overflow-hidden flex-shrink-0 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                  <div className="y2k-record-tile w-10 h-10 md:w-12 md:h-12 rounded-lg relative overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/30 to-neon-cyan/30 animate-pulse" />
                     <Disc className={`absolute inset-0 m-auto w-5 h-5 md:w-6 md:h-6 text-white ${isPlaying ? 'animate-spin-slow' : ''}`} />
                   </div>
                   <div className="min-w-0 flex-shrink">
-                    <h4 className="text-xs md:text-sm font-bold text-white truncate">{currentSetlist.title}</h4>
-                    <p className="text-[9px] md:text-[10px] text-zinc-500 uppercase tracking-widest truncate">
+                    <h4 className="y2k-player-title text-xs md:text-sm font-bold truncate">{currentSetlist.title}</h4>
+                    <p className="y2k-player-tags text-[9px] md:text-[10px] uppercase tracking-widest truncate">
                       {currentSetlist.tags.join(' / ')}
                     </p>
                   </div>
                 </div>
 
-                {/* Mobile-only Play Button */}
-                <button 
-                  onClick={() => handleTogglePlay()} 
-                  className="md:hidden flex-shrink-0 p-3 bg-white rounded-full text-black shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-90 transition-transform"
-                >
-                  {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
-                </button>
+                <div className="flex md:hidden items-center gap-1 shrink-0">
+                  <button onClick={() => skipAudio(-10)} className="transport-skip" aria-label="Mundur 10 detik" title="Mundur 10 detik">
+                    <RotateCcw className="w-5 h-5" /><span>10</span>
+                  </button>
+                  <button onClick={() => handleTogglePlay()} className="transport-primary" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                    {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-0.5" />}
+                  </button>
+                  <button onClick={() => skipAudio(10)} className="transport-skip" aria-label="Maju 10 detik" title="Maju 10 detik">
+                    <RotateCw className="w-5 h-5" /><span>10</span>
+                  </button>
+                </div>
               </div>
 
               {/* Progress & Desktop Controls */}
               <div className="flex flex-col items-center gap-1 md:gap-2 flex-1 w-full max-w-full md:max-w-2xl">
                 {/* Desktop-only Control Row */}
-                <div className="hidden md:flex items-center gap-6">
-                  <button onClick={() => handleTogglePlay()} className="p-3 bg-white rounded-full text-black hover:scale-110 transition-transform shadow-lg">
-                    {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
+                <div className="hidden md:flex items-center gap-4">
+                  <button onClick={() => skipAudio(-10)} className="transport-skip" aria-label="Mundur 10 detik" title="Mundur 10 detik">
+                    <RotateCcw className="w-5 h-5" /><span>10</span>
+                  </button>
+                  <button onClick={() => handleTogglePlay()} className="transport-primary hover:scale-105 transition-transform" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                    {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-0.5" />}
+                  </button>
+                  <button onClick={() => skipAudio(10)} className="transport-skip" aria-label="Maju 10 detik" title="Maju 10 detik">
+                    <RotateCw className="w-5 h-5" /><span>10</span>
                   </button>
                 </div>
                 
@@ -444,7 +512,7 @@ export default function App() {
                       max={duration || 100} 
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer relative z-10 accent-neon-cyan"
+                      className="player-range w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer relative z-10 accent-neon-cyan"
                     />
                     <div 
                       className="absolute left-0 h-1 bg-gradient-to-r from-neon-purple to-neon-cyan pointer-events-none rounded-full transition-all duration-100" 
@@ -472,7 +540,7 @@ export default function App() {
                     setVolume(val);
                     if (audioRef.current) audioRef.current.volume = val;
                   }}
-                  className="w-24 h-1 bg-zinc-800 rounded-full appearance-none cursor-pointer accent-neon-cyan"
+                  className="player-range w-24 h-1 bg-zinc-800 rounded-full appearance-none cursor-pointer accent-neon-cyan"
                 />
               </div>
             </div>
