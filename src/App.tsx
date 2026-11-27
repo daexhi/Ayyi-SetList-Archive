@@ -62,6 +62,13 @@ const INITIAL_SETLISTS: Setlist[] = [
     audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/cxt495g9lko4oponme73m/IndoBounce-x-Big-Room-Party-Mix-Ayyi.mp3?rlkey=ggd4x5oeknwph9oa6yzaphxjk&st=wvl9ilis',
     tags: ['IndoBounce', 'Big Room', 'Hard Dance'],
     bpm: 130
+  },
+  {
+    id: 'bassline-bounce-mixtape',
+    title: 'BASSLINE BOUNCE MIXTAPE',
+    duration: '--:--',
+    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/j4le6y1q77vcpg8dwgsux/BASSLINE-BOUNCE-MIXTAPE.MP3?rlkey=09dhj73l84jel3ak144m66qn1&st=cmkgqlyy',
+    tags: ['BASSLINE BOUNCE', 'BOLHA']
   }
 ];
 
