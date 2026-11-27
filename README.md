@@ -1,20 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Ayyi SetList Archive
 
-# Run and deploy your AI Studio app
+A neon Y2K-style archive of DJ Ayyi's mixes, with an in-page audio player and a live visualizer.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/69a36269-3cfe-4f4d-8915-87f8fb4b0595
+- Seven curated setlists spanning hard techno, industrial techno, rawstyle, hipdut, IndoBounce, big room and oldskool.
+- Play, pause, seek, skip, and volume controls.
+- Audio-reactive visualizer and animated setlist artwork.
+- Responsive layout with reduced-motion support.
+- Mix durations loaded from the audio metadata when available.
 
-## Run Locally
+## Run locally
 
-**Prerequisites:**  Node.js
+Requirements: Node.js and npm.
 
+```sh
+npm install
+npm run dev
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Vite prints the local development URL in the terminal. To create and preview a production build:
+
+```sh
+npm run build
+npm run preview
+```
+
+Run the TypeScript check with `npm run lint`.
+
+## Project structure
+
+- `src/App.tsx` — setlist data, audio playback and page UI.
+- `src/components/SetlistRow.tsx` — setlist list rows.
+- `src/components/Visualizer.tsx` — audio visualizer.
+- `src/index.css` — visual styling and responsive rules.
+- `public/favicon.svg` — site icon.
+
+The mixes are streamed from their configured Dropbox links, so playback requires an internet connection and those links to remain available. No API key or server-side service is required to run the site.
