@@ -12,6 +12,13 @@ import type { Setlist } from './types';
 
 const INITIAL_SETLISTS: Setlist[] = [
   {
+    id: 'bassline-bounce-mixtape',
+    title: 'BASSLINE BOUNCE MIXTAPE',
+    duration: '--:--',
+    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/j4le6y1q77vcpg8dwgsux/BASSLINE-BOUNCE-MIXTAPE.MP3?rlkey=09dhj73l84jel3ak144m66qn1&st=cmkgqlyy',
+    tags: ['BASSLINE BOUNCE', 'BOLHA']
+  },
+  {
     id: 'hard-techno-industrial-techno',
     title: 'HARD TECHNO MIX',
     duration: '--:--',
@@ -63,13 +70,7 @@ const INITIAL_SETLISTS: Setlist[] = [
     tags: ['IndoBounce', 'Big Room', 'Hard Dance'],
     bpm: 130
   },
-  {
-    id: 'bassline-bounce-mixtape',
-    title: 'BASSLINE BOUNCE MIXTAPE',
-    duration: '--:--',
-    audioUrl: 'https://dl.dropboxusercontent.com/scl/fi/j4le6y1q77vcpg8dwgsux/BASSLINE-BOUNCE-MIXTAPE.MP3?rlkey=09dhj73l84jel3ak144m66qn1&st=cmkgqlyy',
-    tags: ['BASSLINE BOUNCE', 'BOLHA']
-  }
+
 ];
 
 export default function App() {
