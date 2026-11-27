@@ -281,6 +281,32 @@ export default function App() {
     setCurrentTime(nextTime);
   };
 
+  const handleTrackEnded = () => {
+    const audio = audioRef.current;
+    if (!audio || INITIAL_SETLISTS.length === 0) {
+      setIsPlaying(false);
+      return;
+    }
+
+    const currentIndex = INITIAL_SETLISTS.findIndex(({ id }) => id === currentSetlist.id);
+    const nextSetlist = INITIAL_SETLISTS[(currentIndex + 1) % INITIAL_SETLISTS.length];
+    if (!nextSetlist) {
+      setIsPlaying(false);
+      return;
+    }
+
+    setCurrentSetlist(nextSetlist);
+    setCurrentTime(0);
+    setDuration(0);
+    audio.src = nextSetlist.audioUrl;
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch((err) => {
+        console.error('Playback error:', err);
+        setIsPlaying(false);
+      });
+  };
+
   return (
     <div ref={mainRef} className="min-h-screen bg-dark-surface font-sans selection:bg-neon-cyan/30 overflow-x-hidden">
       
@@ -561,7 +587,7 @@ export default function App() {
         crossOrigin="anonymous"
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={handleTrackEnded}
       />
       
       <style>{`
